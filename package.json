@@ -1,0 +1,27 @@
+{
+  "name": "bolus-calculator-function",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kealanheena/bolus-calculator-function.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kealanheena/bolus-calculator-function/issues"
+  },
+  "homepage": "https://github.com/kealanheena/bolus-calculator-function#readme"
+}

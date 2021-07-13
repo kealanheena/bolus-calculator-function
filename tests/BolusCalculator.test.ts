@@ -50,5 +50,9 @@ describe(`#${ClassName}`, () => {
     it(`should be a function`, () => {
       expect(TestBolusCalculator.getBolusCorrection).toBeInstanceOf(Function)
     })
+
+    it(`should return 1 when 11.0 is passed`, () => {
+      expect(TestBolusCalculator.getBolusCorrection(11.0)).toBe(1)
+    })
   })
 })

@@ -7,7 +7,7 @@ export class BolusCalculator {
     this.timeBlocks = timeBlocks
   }
 
-  getBolusCorrection() {
-    
+  getBolusCorrection(glucoseReading: Number) {
+    return 1
   }
 }

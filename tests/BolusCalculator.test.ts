@@ -51,8 +51,12 @@ describe(`#${ClassName}`, () => {
       expect(TestBolusCalculator.getBolusCorrection).toBeInstanceOf(Function)
     })
 
-    it(`should return 1 when 11.0 is passed`, () => {
+    it(`should return 1 when 11.0 is passed and insulin sensitivity is equal to 3.0`, () => {
       expect(TestBolusCalculator.getBolusCorrection(11.0)).toBe(1)
+    })
+
+    it(`should return 2 when 14.0 is passed and insulin sensitivity is equal to 3.0`, () => {
+      expect(TestBolusCalculator.getBolusCorrection(14.0)).toBe(2)
     })
   })
 })

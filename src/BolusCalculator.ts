@@ -1,7 +1,9 @@
-export class BolusCalculator {
-  timeBlocks: Object
+import { TimeBlocks } from "./interfaces/TimeBlock";
 
-  constructor(timeBlocks: Object) {
+export class BolusCalculator {
+  timeBlocks: TimeBlocks
+
+  constructor(timeBlocks: TimeBlocks) {
     this.timeBlocks = timeBlocks
   }
 }

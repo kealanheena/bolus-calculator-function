@@ -45,4 +45,10 @@ describe(`#${ClassName}`, () => {
     expect(TestBolusCalculator.timeBlocks['00:00-05:00'].carbRatio).toBe(calculationInfo.carbRatio)
     expect(TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity).toBe(calculationInfo.insulinSensitivity)
   })
+
+  describe(`#getBolusCorrection`, () => {
+    it(`should be a function`, () => {
+      expect(TestBolusCalculator.getBolusCorrection).toBeInstanceOf(Function)
+    })
+  })
 })

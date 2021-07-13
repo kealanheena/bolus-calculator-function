@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "jest --watchall"
+    "test": "jest --watchAll"
   },
   "repository": {
     "type": "git",

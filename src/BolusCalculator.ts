@@ -6,4 +6,8 @@ export class BolusCalculator {
   constructor(timeBlocks: TimeBlocks) {
     this.timeBlocks = timeBlocks
   }
+
+  getBolusCorrection() {
+    
+  }
 }

@@ -1,18 +1,24 @@
 import { BolusCalculator } from "../src/BolusCalculator";
 import { TimeBlocks } from "../src/interfaces/TimeBlock";
+import { CalculationInfo } from "../src/interfaces/CalculationInfo";
 
 const  ClassName:String = `Bolus Calculator`
 
 describe(`#${ClassName}`, () => {
-  let TestBolusCalculator: BolusCalculator, timeBlocks: TimeBlocks
+  let TestBolusCalculator: BolusCalculator, timeBlocks: TimeBlocks, calculationInfo: CalculationInfo
 
   beforeEach(() => {
+    calculationInfo = {
+      targetRange: [5.0, 8.0],
+      carbRatio: 6,
+      insulinSensitivity: 3.0
+    }
     timeBlocks = {
-    '00:00-05:00': {},
-    '05:00-11:30': {},
-    '11:30-16:00': {},
-    '16:00-20:00': {},
-    '20:00-00:00': {}
+    '00:00-05:00': calculationInfo,
+    '05:00-11:30': calculationInfo,
+    '11:30-16:00': calculationInfo,
+    '16:00-20:00': calculationInfo,
+    '20:00-00:00': calculationInfo
     }
     TestBolusCalculator = new BolusCalculator(timeBlocks)
   })
@@ -31,5 +37,12 @@ describe(`#${ClassName}`, () => {
     expect(TestBolusCalculator.timeBlocks['11:30-16:00']).toBeInstanceOf(Object)
     expect(TestBolusCalculator.timeBlocks['16:00-20:00']).toBeInstanceOf(Object)
     expect(TestBolusCalculator.timeBlocks['20:00-00:00']).toBeInstanceOf(Object)
+  })
+
+  it(`a time blocks should have the following keys Target Range, Carb Ratio, Insulin Sensitivity`, () => {
+    expect(TestBolusCalculator.timeBlocks['00:00-05:00'].targetRange).toBeInstanceOf(Array)
+    expect(TestBolusCalculator.timeBlocks['00:00-05:00'].targetRange).toBe(calculationInfo.targetRange)
+    expect(TestBolusCalculator.timeBlocks['00:00-05:00'].carbRatio).toBe(calculationInfo.carbRatio)
+    expect(TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity).toBe(calculationInfo.insulinSensitivity)
   })
 })

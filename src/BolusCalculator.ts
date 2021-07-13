@@ -7,12 +7,11 @@ export class BolusCalculator {
     this.timeBlocks = timeBlocks
   }
 
-  getBolusCorrection(glucoseReading: number) {
-    const insulinSensitivity: number = this.timeBlocks["00:00-05:00"].insulinSensitivity
-    const highTargetRange: number = this.timeBlocks["00:00-05:00"].targetRange[1]
-    const correctableGlucose: number = glucoseReading - highTargetRange
-    const correction = correctableGlucose/insulinSensitivity
-    const roundedCorrection = Math.round(correction)
+  getBolusCorrection(glucoseReading: number) :number {
+    const timeBlock = this.timeBlocks["00:00-05:00"]
+    const { insulinSensitivity, targetRange } = timeBlock
+    const correctableGlucose: number = glucoseReading - targetRange[1]
+    const roundedCorrection: number = Math.round(correctableGlucose/insulinSensitivity)
 
     return roundedCorrection
   }

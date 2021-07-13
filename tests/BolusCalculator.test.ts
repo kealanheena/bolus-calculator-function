@@ -62,5 +62,11 @@ describe(`#${ClassName}`, () => {
     it(`should round up to 3 when 15.7 is passed and insulin sensitivity is equal to 3.0`, () => {
       expect(TestBolusCalculator.getBolusCorrection(15.7)).toBe(3)
     })
+
+    it(`should round up to 3 when 12.0 is passed and insulin sensitivity is equal to 4.0`, () => {
+      TestBolusCalculator.timeBlocks["00:00-05:00"].insulinSensitivity = 4.0
+
+      expect(TestBolusCalculator.getBolusCorrection(12.0)).toBe(1)
+    })
   })
 })

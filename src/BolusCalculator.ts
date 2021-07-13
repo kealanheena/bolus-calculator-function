@@ -11,7 +11,9 @@ export class BolusCalculator {
     const insulinSensitivity: number = this.timeBlocks["00:00-05:00"].insulinSensitivity
     const highTargetRange: number = this.timeBlocks["00:00-05:00"].targetRange[1]
     const correctableGlucose: number = glucoseReading - highTargetRange
-    
-    return correctableGlucose/insulinSensitivity
+    const correction = correctableGlucose/insulinSensitivity
+    const roundedCorrection = Math.round(correction)
+
+    return roundedCorrection
   }
 }

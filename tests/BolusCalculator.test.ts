@@ -58,5 +58,9 @@ describe(`#${ClassName}`, () => {
     it(`should return 2 when 14.0 is passed and insulin sensitivity is equal to 3.0`, () => {
       expect(TestBolusCalculator.getBolusCorrection(14.0)).toBe(2)
     })
+
+    it(`should round up to 3 when 15.7 is passed and insulin sensitivity is equal to 3.0`, () => {
+      expect(TestBolusCalculator.getBolusCorrection(15.7)).toBe(3)
+    })
   })
 })

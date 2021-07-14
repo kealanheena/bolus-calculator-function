@@ -28,7 +28,7 @@ export class BolusCalculator {
     let currentTimeBlock: string = '00:00-05:00'
 
     for (const timeBlock in this.timeBlocks) {
-      const arrayOfTimes: Array<string> = timeBlock.split('-'),
+      const arrayOfTimes: Array<string> = timeBlock.split('-')
       
       this.setStartTime(startTime, arrayOfTimes)
       this.setEndTime(endTime, arrayOfTimes)

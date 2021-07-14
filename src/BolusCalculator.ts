@@ -28,10 +28,11 @@ export class BolusCalculator {
     let currentTimeBlock: string = '00:00-05:00'
 
     for (const timeBlock in this.timeBlocks) {
-      const arrayOfTimes: Array<string> = timeBlock.split('-')
+      const startHoursMinsArray: Array<string> = timeBlock.split('-')[0].split(':'),
+            endHoursMinsArray: Array<string> = timeBlock.split('-')[1].split(':')
       
-      this.setStartTime(startTime, arrayOfTimes)
-      this.setEndTime(endTime, arrayOfTimes)
+      this.setTime(startTime, startHoursMinsArray)
+      this.setTime(endTime, endHoursMinsArray)
 
       if (startTime <= currentTime && endTime > currentTime) {
         currentTimeBlock = timeBlock
@@ -42,19 +43,9 @@ export class BolusCalculator {
     return currentTimeBlock
   }
 
-  private setStartTime(startTime: Date, arrayOfTimes: Array<string>) {
-    const startHoursMinsArray: Array<string> = arrayOfTimes[0].split(":")
-
-    startTime.setHours(Number(startHoursMinsArray[0]));
-    startTime.setMinutes(Number(startHoursMinsArray[1]));
-    startTime.setSeconds(0o0);
-  }
-
-  private setEndTime(endTime: Date, arrayOfTimes: Array<string>) {
-    const endHoursMinsArray: Array<string> = arrayOfTimes[1].split(":")
-
-    endTime.setHours(Number(endHoursMinsArray[0]));
-    endTime.setMinutes(Number(endHoursMinsArray[1]));
-    endTime.setSeconds(0o0);
+  private setTime(time: Date, hoursMinsArray: Array<string>) :void {
+    time.setHours(Number(hoursMinsArray[0]));
+    time.setMinutes(Number(hoursMinsArray[1]));
+    time.setSeconds(0o0);
   }
 }

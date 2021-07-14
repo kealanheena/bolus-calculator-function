@@ -5,21 +5,23 @@ import { CalculationInfo } from "../src/interfaces/CalculationInfo";
 const  ClassName:String = `Bolus Calculator`
 
 describe(`#${ClassName}`, () => {
-  let TestBolusCalculator: BolusCalculator, testTimeBlocks: TimeBlocks, calculationInfo: CalculationInfo
+  let TestBolusCalculator: BolusCalculator, testTimeBlocks: TimeBlocks, testCalculationInfo: CalculationInfo
 
   beforeEach(() => {
-    calculationInfo = {
+    testCalculationInfo = {
       targetRange: [5.0, 8.0],
       carbRatio: 6,
       insulinSensitivity: 3.0
     }
+
     testTimeBlocks = {
-    '00:00-05:00': calculationInfo,
-    '05:00-11:30': calculationInfo,
-    '11:30-16:00': calculationInfo,
-    '16:00-20:00': calculationInfo,
-    '20:00-00:00': calculationInfo
+    '00:00-05:00': testCalculationInfo,
+    '05:00-11:30': testCalculationInfo,
+    '11:30-16:00': testCalculationInfo,
+    '16:00-20:00': testCalculationInfo,
+    '20:00-00:00': testCalculationInfo
     }
+
     TestBolusCalculator = new BolusCalculator(testTimeBlocks)
   })
 
@@ -45,17 +47,12 @@ describe(`#${ClassName}`, () => {
     const timeBlock: CalculationInfo = TestBolusCalculator.timeBlocks['00:00-05:00']
 
     expect(timeBlock.targetRange).toBeInstanceOf(Array)
-    expect(timeBlock.targetRange).toBe(calculationInfo.targetRange)
-    expect(timeBlock.carbRatio).toBe(calculationInfo.carbRatio)
-    expect(timeBlock.insulinSensitivity).toBe(calculationInfo.insulinSensitivity)
+    expect(timeBlock.targetRange).toBe(testCalculationInfo.targetRange)
+    expect(timeBlock.carbRatio).toBe(testCalculationInfo.carbRatio)
+    expect(timeBlock.insulinSensitivity).toBe(testCalculationInfo.insulinSensitivity)
   })
 
   describe(`#getBolusCorrection`, () => {
-    let insulinSensitivity: number
-
-    beforeEach(() => {
-      insulinSensitivity = TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity
-    })
 
     it(`should be a function`, () => {
       expect(TestBolusCalculator.getBolusCorrection).toBeInstanceOf(Function)
@@ -76,18 +73,50 @@ describe(`#${ClassName}`, () => {
     })
 
     describe(`When the insulin sensitivity is 4.0`, () => {
+
+      beforeEach(() => {
+        TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 4.0
+      })
+      
       it(`should return 1 when 12.0 is passed and insulin sensitivity is equal to 4.0`, () => {
-        insulinSensitivity = 4.0
-  
         expect(TestBolusCalculator.getBolusCorrection(12.0)).toBe(1)
       })
 
-      it(`should round up to 2 when 14.7 is passed and insulin sensitivity is equal to 3.0`, () => {
+      it(`should round up to 2 when 14.7 is passed and insulin sensitivity is equal to 4.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(14.7)).toBe(2)
       })
   
       it(`should round up to 3 when 15.7 is passed and insulin sensitivity is equal to 3.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(19.7)).toBe(4)
+        expect(TestBolusCalculator.getBolusCorrection(19.7)).toBe(3)
+      })
+    })
+
+    describe(`When calculating bolus correction at certain times`, () => {
+
+      beforeEach(() => {
+        testTimeBlocks = {
+          '00:00-05:00': {
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 3.0
+          },
+          '05:00-11:30': {
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 5.0
+          },
+          '11:30-16:00': {
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 6.0
+          },
+          '16:00-20:00': {
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 9.0
+          },
+          '20:00-00:00': {
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 10.0
+          }
+        }
+
+        TestBolusCalculator.timeBlocks = testTimeBlocks
+      })
+
+      it(`should return 3 when 18.0 is passed between "00:00-05:00" where insulin sensitivity is equal to 3.0`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(18.0)).toBe(3)
       })
     })
   })

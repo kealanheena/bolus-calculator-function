@@ -96,27 +96,43 @@ describe(`#${ClassName}`, () => {
       beforeEach(() => {
         testTimeBlocks = {
           '00:00-05:00': {
-            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 3.0
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 1.0
           },
           '05:00-11:30': {
-            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 5.0
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 2.0
           },
           '11:30-16:00': {
-            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 6.0
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 4.0
           },
           '16:00-20:00': {
-            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 9.0
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 8.0
           },
           '20:00-00:00': {
-            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 10.0
+            targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 16.0
           }
         }
 
         TestBolusCalculator.timeBlocks = testTimeBlocks
       })
 
-      it(`should return 3 when 18.0 is passed between "00:00-05:00" where insulin sensitivity is equal to 3.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(18.0)).toBe(3)
+      it(`should return 16 when 24.0 is passed between "00:00-05:00" where insulin sensitivity is equal to 1.0`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(16)
+      })
+
+      it(`should return 8 when 24.0 is passed between "05:00-11:30" where insulin sensitivity is equal to 2.0`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(8)
+      })
+
+      it(`should return 4 when 24.0 is passed between "11:30-16:00" where insulin sensitivity is equal to 4.0`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(4)
+      })
+
+      it(`should return 2 when 24.0 is passed between "16:00-20:00" where insulin sensitivity is equal to 8.0`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(2)
+      })
+
+      it(`should return 1 when 24.0 is passed between "20:00-00:00" where insulin sensitivity is equal to 16.0`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(1)
       })
     })
   })

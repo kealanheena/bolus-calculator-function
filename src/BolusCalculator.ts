@@ -1,5 +1,5 @@
-import { TimeBlocks } from "./interfaces/TimeBlock";
-import { CalculationInfo } from './interfaces/CalculationInfo';
+import { TimeBlocks } from "./interfaces/TimeBlock"
+import { CalculationInfo } from './interfaces/CalculationInfo'
 
 export class BolusCalculator {
   timeBlocks: TimeBlocks
@@ -16,7 +16,7 @@ export class BolusCalculator {
     if (this.isCorrectionZero(glucoseReading, targetRange[1])) return 0
 
     const correctableGlucose: number = this.getCorrectableGlucose(glucoseReading, targetRange[1]),
-          floatCorrection: number = this.getFloatCorrection(correctableGlucose, insulinSensitivity),
+          floatCorrection: number = this.getFloatBolusCorrection(correctableGlucose, insulinSensitivity),
           roundedCorrection: number = Math.round(floatCorrection)
 
     return roundedCorrection
@@ -59,7 +59,7 @@ export class BolusCalculator {
     return glucoseReading - highTargetRange
   }
 
-  private getFloatCorrection(correctableGlucose: number, insulinSensitivity: number) :number {
+  private getFloatBolusCorrection(correctableGlucose: number, insulinSensitivity: number) :number {
     return correctableGlucose / insulinSensitivity
   }
 }

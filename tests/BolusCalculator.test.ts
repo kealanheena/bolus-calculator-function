@@ -1,11 +1,21 @@
-import { BolusCalculator } from "../src/BolusCalculator";
-import { TimeBlocks } from "../src/interfaces/TimeBlock";
-import { CalculationInfo } from "../src/interfaces/CalculationInfo";
+import { jest } from '@jest/globals'
+import { BolusCalculator } from "../src/BolusCalculator"
+import { TimeBlocks } from "../src/interfaces/TimeBlock"
+import { CalculationInfo } from "../src/interfaces/CalculationInfo"
 
 const  ClassName:String = `Bolus Calculator`
 
 describe(`#${ClassName}`, () => {
   let TestBolusCalculator: BolusCalculator, testTimeBlocks: TimeBlocks, testCalculationInfo: CalculationInfo
+
+  beforeAll(() => {
+    jest.useFakeTimers('modern')
+    jest.setSystemTime(new Date('1 Jan 2000 00:00:00 GMT').getTime())
+  })
+
+  afterAll(() => {
+    jest.useRealTimers();
+  })
 
   beforeEach(() => {
     testCalculationInfo = {
@@ -140,18 +150,26 @@ describe(`#${ClassName}`, () => {
       })
 
       it(`should return 8 when 24.0 is passed between "05:00-11:30" where insulin sensitivity is equal to 2.0`, () => {
+        jest.setSystemTime(new Date('31 Dec 1999 05:00:00 GMT').getTime())
+
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(8)
       })
 
       it(`should return 4 when 24.0 is passed between "11:30-16:00" where insulin sensitivity is equal to 4.0`, () => {
+        jest.setSystemTime(new Date('31 Dec 1999 11:30:00 GMT').getTime())
+        
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(4)
       })
 
       it(`should return 2 when 24.0 is passed between "16:00-20:00" where insulin sensitivity is equal to 8.0`, () => {
+        jest.setSystemTime(new Date('31 Dec 1999 16:00:00 GMT').getTime())
+
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(2)
       })
 
       it(`should return 1 when 24.0 is passed between "20:00-00:00" where insulin sensitivity is equal to 16.0`, () => {
+        jest.setSystemTime(new Date('31 Dec 1999 20:00:00 GMT').getTime())
+
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(1)
       })
       

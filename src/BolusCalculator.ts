@@ -13,7 +13,7 @@ export class BolusCalculator {
           activeTimeBlock: CalculationInfo = this.timeBlocks[currentTimeBlock],
           { insulinSensitivity, targetRange } = activeTimeBlock
 
-    if (activeTimeBlock.targetRange[1] > glucoseReading) return 0
+    if (this.isCorrectionZero(glucoseReading, targetRange[1])) return 0
 
     const correctableGlucose: number = this.getCorrectableGlucose(glucoseReading, targetRange[1]),
           floatCorrection: number = this.getFloatCorrection(correctableGlucose, insulinSensitivity),
@@ -27,7 +27,7 @@ export class BolusCalculator {
           startTime: Date = new Date(currentTime.getTime()),
           endTime: Date = new Date(currentTime.getTime())
     
-    let currentTimeBlock: string = '00:00-05:00'
+    let currentTimeBlock: string = '20:00-00:00'
 
     for (const timeBlock in this.timeBlocks) {
       const startHoursMinsArray: Array<string> = timeBlock.split('-')[0].split(':'),
@@ -49,6 +49,10 @@ export class BolusCalculator {
     time.setHours(Number(hoursMinsArray[0]));
     time.setMinutes(Number(hoursMinsArray[1]));
     time.setSeconds(0o0);
+  }
+
+  private isCorrectionZero(glucoseReading: number, highTargetRange: number) :boolean {
+    return glucoseReading < highTargetRange
   }
 
   private getCorrectableGlucose(glucoseReading: number, highTargetRange: number) :number {

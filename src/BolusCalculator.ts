@@ -9,13 +9,15 @@ export class BolusCalculator {
   }
 
   getBolusCorrection(glucoseReading: number) :number {
-    const currentTimeBlock: string = this.getCurrentTimeBlock()
+    const currentTimeBlock: string = this.getCurrentTimeBlock(),
+          activeTimeBlock: CalculationInfo = this.timeBlocks[currentTimeBlock],
+          { insulinSensitivity, targetRange } = activeTimeBlock
 
-    const activeTimeBlock: CalculationInfo = this.timeBlocks[currentTimeBlock]
+    if (activeTimeBlock.targetRange[1] > glucoseReading) return 0
 
-    const { insulinSensitivity, targetRange } = activeTimeBlock
-    const correctableGlucose: number = glucoseReading - targetRange[1]
-    const roundedCorrection: number = Math.round(correctableGlucose/insulinSensitivity)
+    const correctableGlucose: number = this.getCorrectableGlucose(glucoseReading, targetRange[1]),
+          floatCorrection: number = this.getFloatCorrection(correctableGlucose, insulinSensitivity),
+          roundedCorrection: number = Math.round(floatCorrection)
 
     return roundedCorrection
   }
@@ -47,5 +49,13 @@ export class BolusCalculator {
     time.setHours(Number(hoursMinsArray[0]));
     time.setMinutes(Number(hoursMinsArray[1]));
     time.setSeconds(0o0);
+  }
+
+  private getCorrectableGlucose(glucoseReading: number, highTargetRange: number) :number {
+    return glucoseReading - highTargetRange
+  }
+
+  private getFloatCorrection(correctableGlucose: number, insulinSensitivity: number) :number {
+    return correctableGlucose / insulinSensitivity
   }
 }

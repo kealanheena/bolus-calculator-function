@@ -82,12 +82,32 @@ describe(`#${ClassName}`, () => {
         expect(TestBolusCalculator.getBolusCorrection(12.0)).toBe(1)
       })
 
-      it(`should round up to 2 when 14.7 is passed and insulin sensitivity is equal to 4.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(14.7)).toBe(2)
+      it(`should return 2 when 16.0 is passed and insulin sensitivity is equal to 4.0`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(16.0)).toBe(2)
       })
+
+      it(`should return 0 when the number passed is less than the high number in the target range`, () => {
+        expect(TestBolusCalculator.getBolusCorrection(7.0)).toBe(0)
+      })
+
+      describe(`Rounding up`, ()=> {
+        it(`should round up to 2 when 14.7 is passed and insulin sensitivity is equal to 4.0`, () => {
+          expect(TestBolusCalculator.getBolusCorrection(14.7)).toBe(2)
+        })
+    
+        it(`should round up to 3 when 15.7 is passed and insulin sensitivity is equal to 3.0`, () => {
+          expect(TestBolusCalculator.getBolusCorrection(19.7)).toBe(3)
+        })
+      })
+
+      describe(`Rounding down`, ()=> {
+        it(`should round down to 1 when 13.1 is passed and insulin sensitivity is equal to 4.0`, () => {
+          expect(TestBolusCalculator.getBolusCorrection(13.1)).toBe(1)
+        })
   
-      it(`should round up to 3 when 15.7 is passed and insulin sensitivity is equal to 3.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(19.7)).toBe(3)
+        it(`should round down to 2 when 17.1 is passed and insulin sensitivity is equal to 4.0`, () => {
+          expect(TestBolusCalculator.getBolusCorrection(17.1)).toBe(2)
+        })
       })
     })
 
@@ -134,6 +154,7 @@ describe(`#${ClassName}`, () => {
       it(`should return 1 when 24.0 is passed between "20:00-00:00" where insulin sensitivity is equal to 16.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(1)
       })
+      
     })
   })
 })

@@ -73,6 +73,13 @@ describe(`#${ClassName}`, () => {
       it(`should return 3 when 5.0 (glucoseReading) and 18 (carbsInGrams) are passed`, () => {
         expect(TestBolusCalculator.getBolus(5.0, 18)).toBe(3)
       })
+
+      describe(`rounding up`, () => {
+        it(`should return 3 when 5.0 (glucoseReading) and 16 (carbsInGrams) are passed`, () => {
+          expect(TestBolusCalculator.getBolus(5.0, 16)).toBe(3)
+        })
+      })
+      
     })
   })
 
@@ -90,9 +97,16 @@ describe(`#${ClassName}`, () => {
       it(`should return 2 when 14.0 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(14.0)).toBe(2)
       })
-  
-      it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(15.7)).toBe(3)
+      describe(`rounding up`, () => {
+        it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
+          expect(TestBolusCalculator.getBolusCorrection(15.7)).toBe(3)
+        })
+      })
+
+      describe(`rounding down`, () => {
+        it(`should round down to 3 when 17.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
+          expect(TestBolusCalculator.getBolusCorrection(17.7)).toBe(3)
+        })
       })
     })
 

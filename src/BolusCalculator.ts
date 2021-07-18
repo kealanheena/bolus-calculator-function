@@ -9,7 +9,7 @@ export class BolusCalculator {
   }
 
   getBolus(glucoseReading: number, carbsInGrams: number) :number {
-    return carbsInGrams / this.timeBlocks['00:00-05:00'].carbRatio
+    return Math.round(carbsInGrams / this.timeBlocks['00:00-05:00'].carbRatio)
   }
 
   getBolusCorrection(glucoseReading: number) :number {

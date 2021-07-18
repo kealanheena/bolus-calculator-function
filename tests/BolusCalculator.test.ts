@@ -62,6 +62,12 @@ describe(`#${ClassName}`, () => {
     expect(timeBlock.insulinSensitivity).toBe(testCalculationInfo.insulinSensitivity)
   })
 
+  describe(`#getBolus`, () => {
+    it(`should be a function`, () => {
+      expect(TestBolusCalculator.getBolus).toBeInstanceOf(Function)
+    })
+  })
+
   describe(`#getBolusCorrection`, () => {
 
     it(`should be a function`, () => {

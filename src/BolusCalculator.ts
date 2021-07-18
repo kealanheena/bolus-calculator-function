@@ -8,6 +8,10 @@ export class BolusCalculator {
     this.timeBlocks = timeBlocks
   }
 
+  getBolus(lucoseReading: number) {
+
+  }
+
   getBolusCorrection(glucoseReading: number) :number {
     const currentTimeBlock: string = this.getCurrentTimeBlock(),
           activeTimeBlock: CalculationInfo = this.timeBlocks[currentTimeBlock],
@@ -21,6 +25,10 @@ export class BolusCalculator {
 
     return roundedCorrection
   }
+
+  // =================
+  // private functions
+  // =================
 
   private getCurrentTimeBlock() :string {
     const currentTime: Date = new Date(),

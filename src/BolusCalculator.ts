@@ -8,8 +8,8 @@ export class BolusCalculator {
     this.timeBlocks = timeBlocks
   }
 
-  getBolus(lucoseReading: number) {
-
+  getBolus(glucoseReading: number, carbsInGrams: number) :number {
+    return 2
   }
 
   getBolusCorrection(glucoseReading: number) :number {
@@ -54,9 +54,9 @@ export class BolusCalculator {
   }
 
   private setTime(time: Date, hoursMinsArray: Array<string>) :void {
-    time.setHours(Number(hoursMinsArray[0]));
-    time.setMinutes(Number(hoursMinsArray[1]));
-    time.setSeconds(0o0);
+    time.setHours(Number(hoursMinsArray[0]))
+    time.setMinutes(Number(hoursMinsArray[1]))
+    time.setSeconds(0o0)
   }
 
   private isCorrectionZero(glucoseReading: number, highTargetRange: number) :boolean {

@@ -11,13 +11,7 @@ describe(`#${ClassName}`, () => {
   beforeAll(() => {
     jest.useFakeTimers('modern')
     jest.setSystemTime(new Date('1 Jan 2000 00:00:00 GMT').getTime())
-  })
 
-  afterAll(() => {
-    jest.useRealTimers();
-  })
-
-  beforeEach(() => {
     testCalculationInfo = {
       targetRange: [5.0, 8.0],
       carbRatio: 6,
@@ -33,6 +27,10 @@ describe(`#${ClassName}`, () => {
     }
 
     TestBolusCalculator = new BolusCalculator(testTimeBlocks)
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
   })
 
   it(`should create an instance of ${ClassName} when TestBolusCalculator is declared`, () => {
@@ -66,6 +64,12 @@ describe(`#${ClassName}`, () => {
     it(`should be a function`, () => {
       expect(TestBolusCalculator.getBolus).toBeInstanceOf(Function)
     })
+
+    describe(`when the carb ratio is 6 and glucose reading is in the target range`, () => {
+      it(`should return 2 when 5.0 (glucoseReading) and 12 (carbsInGrams) are passed`, () => {
+        expect(TestBolusCalculator.getBolus(5.0, 12)).toBe(2)
+      })
+    })
   })
 
   describe(`#getBolusCorrection`, () => {
@@ -74,31 +78,35 @@ describe(`#${ClassName}`, () => {
       expect(TestBolusCalculator.getBolusCorrection).toBeInstanceOf(Function)
     })
 
-    describe(`When the insulin sensitivity is 3.0`, () => {
-      it(`should return 1 when 11.0 is passed and insulin sensitivity is equal to 3.0`, () => {
+    describe(`when the insulin sensitivity is 3.0`, () => {
+      it(`should return 1 when 11.0 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(11.0)).toBe(1)
       })
   
-      it(`should return 2 when 14.0 is passed and insulin sensitivity is equal to 3.0`, () => {
+      it(`should return 2 when 14.0 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(14.0)).toBe(2)
       })
   
-      it(`should round up to 3 when 15.7 is passed and insulin sensitivity is equal to 3.0`, () => {
+      it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(15.7)).toBe(3)
       })
     })
 
-    describe(`When the insulin sensitivity is 4.0`, () => {
+    describe(`when the insulin sensitivity is 4.0`, () => {
 
-      beforeEach(() => {
+      beforeAll(() => {
         TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 4.0
       })
+
+      afterAll(() => {
+        TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 3.0
+      })
       
-      it(`should return 1 when 12.0 is passed and insulin sensitivity is equal to 4.0`, () => {
+      it(`should return 1 when 12.0 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(12.0)).toBe(1)
       })
 
-      it(`should return 2 when 16.0 is passed and insulin sensitivity is equal to 4.0`, () => {
+      it(`should return 2 when 16.0 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(16.0)).toBe(2)
       })
 
@@ -106,30 +114,30 @@ describe(`#${ClassName}`, () => {
         expect(TestBolusCalculator.getBolusCorrection(7.0)).toBe(0)
       })
 
-      describe(`Rounding up`, ()=> {
-        it(`should round up to 2 when 14.7 is passed and insulin sensitivity is equal to 4.0`, () => {
+      describe(`rounding up`, ()=> {
+        it(`should round up to 2 when 14.7 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
           expect(TestBolusCalculator.getBolusCorrection(14.7)).toBe(2)
         })
     
-        it(`should round up to 3 when 15.7 is passed and insulin sensitivity is equal to 3.0`, () => {
+        it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
           expect(TestBolusCalculator.getBolusCorrection(19.7)).toBe(3)
         })
       })
 
-      describe(`Rounding down`, ()=> {
-        it(`should round down to 1 when 13.1 is passed and insulin sensitivity is equal to 4.0`, () => {
+      describe(`rounding down`, ()=> {
+        it(`should round down to 1 when 13.1 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
           expect(TestBolusCalculator.getBolusCorrection(13.1)).toBe(1)
         })
   
-        it(`should round down to 2 when 17.1 is passed and insulin sensitivity is equal to 4.0`, () => {
+        it(`should round down to 2 when 17.1 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
           expect(TestBolusCalculator.getBolusCorrection(17.1)).toBe(2)
         })
       })
     })
 
-    describe(`When calculating bolus correction at certain times`, () => {
+    describe(`when calculating bolus correction at certain times`, () => {
 
-      beforeEach(() => {
+      beforeAll(() => {
         testTimeBlocks = {
           '00:00-05:00': {
             targetRange: [5.0, 8.0], carbRatio: 6, insulinSensitivity: 1.0
@@ -151,29 +159,29 @@ describe(`#${ClassName}`, () => {
         TestBolusCalculator.timeBlocks = testTimeBlocks
       })
 
-      it(`should return 16 when 24.0 is passed between "00:00-05:00" where insulin sensitivity is equal to 1.0`, () => {
+      it(`should return 16 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is equal to 1.0`, () => {
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(16)
       })
 
-      it(`should return 8 when 24.0 is passed between "05:00-11:30" where insulin sensitivity is equal to 2.0`, () => {
+      it(`should return 8 when 24.0 (glucoseReading) is passed between "05:00-11:30" where insulin sensitivity is equal to 2.0`, () => {
         jest.setSystemTime(new Date('31 Dec 1999 05:00:00 GMT').getTime())
 
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(8)
       })
 
-      it(`should return 4 when 24.0 is passed between "11:30-16:00" where insulin sensitivity is equal to 4.0`, () => {
+      it(`should return 4 when 24.0 (glucoseReading) is passed between "11:30-16:00" where insulin sensitivity is equal to 4.0`, () => {
         jest.setSystemTime(new Date('31 Dec 1999 11:30:00 GMT').getTime())
         
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(4)
       })
 
-      it(`should return 2 when 24.0 is passed between "16:00-20:00" where insulin sensitivity is equal to 8.0`, () => {
+      it(`should return 2 when 24.0 (glucoseReading) is passed between "16:00-20:00" where insulin sensitivity is equal to 8.0`, () => {
         jest.setSystemTime(new Date('31 Dec 1999 16:00:00 GMT').getTime())
 
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(2)
       })
 
-      it(`should return 1 when 24.0 is passed between "20:00-00:00" where insulin sensitivity is equal to 16.0`, () => {
+      it(`should return 1 when 24.0 (glucoseReading) is passed between "20:00-00:00" where insulin sensitivity is equal to 16.0`, () => {
         jest.setSystemTime(new Date('31 Dec 1999 20:00:00 GMT').getTime())
 
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(1)

@@ -69,6 +69,10 @@ describe(`#${ClassName}`, () => {
       it(`should return 2 when 5.0 (glucoseReading) and 12 (carbsInGrams) are passed`, () => {
         expect(TestBolusCalculator.getBolus(5.0, 12)).toBe(2)
       })
+
+      it(`should return 3 when 5.0 (glucoseReading) and 18 (carbsInGrams) are passed`, () => {
+        expect(TestBolusCalculator.getBolus(5.0, 18)).toBe(3)
+      })
     })
   })
 

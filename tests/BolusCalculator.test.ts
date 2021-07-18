@@ -75,8 +75,14 @@ describe(`#${ClassName}`, () => {
       })
 
       describe(`rounding up`, () => {
-        it(`should return 3 when 5.0 (glucoseReading) and 16 (carbsInGrams) are passed`, () => {
+        it(`should round up to 3 when 5.0 (glucoseReading) and 16 (carbsInGrams) are passed`, () => {
           expect(TestBolusCalculator.getBolus(5.0, 16)).toBe(3)
+        })
+      })
+
+      describe(`rounding down`, () => {
+        it(`should round down to 3 when 5.0 (glucoseReading) and 20 (carbsInGrams) are passed`, () => {
+          expect(TestBolusCalculator.getBolus(5.0, 20)).toBe(3)
         })
       })
       

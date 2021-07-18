@@ -67,7 +67,7 @@ describe(`#${ClassName}`, () => {
 
     describe(`when the carb ratio is 6 and glucose reading is in the target range`, () => {
       it(`should return 2 when 5.0 (glucoseReading) and 12 (carbsInGrams) are passed`, () => {
-        expect(TestBolusCalculator.getBolus(5.0, 12)).toBe(2)
+        
       })
 
       it(`should return 3 when 5.0 (glucoseReading) and 18 (carbsInGrams) are passed`, () => {
@@ -87,7 +87,7 @@ describe(`#${ClassName}`, () => {
       })
     })
 
-    describe.only(`when calculating bolus at certain times`,  () => {
+    describe(`when calculating bolus at certain times`,  () => {
       beforeAll(() => {
         testTimeBlocks = {
           '00:00-05:00': {
@@ -293,6 +293,47 @@ describe(`#${ClassName}`, () => {
 
         expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(1)
       }) 
+    })
+  })
+
+  describe(`#getBolus & #getBolusCorrection`, () => {
+    beforeAll(() => {
+      testTimeBlocks = {
+        '00:00-05:00': {
+          targetRange: [5.0, 8.0],
+          carbRatio: 1,
+          insulinSensitivity: 1.0
+        },
+        '05:00-11:30': {
+          targetRange: [5.0, 8.0],
+          carbRatio: 2,
+          insulinSensitivity: 2.0
+        },
+        '11:30-16:00': {
+          targetRange: [5.0, 8.0],
+          carbRatio: 4,
+          insulinSensitivity: 4.0
+        },
+        '16:00-20:00': {
+          targetRange: [5.0, 8.0],
+          carbRatio: 8,
+          insulinSensitivity: 8.0
+        },
+        '20:00-00:00': {
+          targetRange: [5.0, 8.0],
+          carbRatio: 16,
+          insulinSensitivity: 16.0
+        }
+      }
+  
+      TestBolusCalculator.timeBlocks = testTimeBlocks
+    })
+
+    afterAll(() => {
+      jest.setSystemTime(new Date('1 Jan 2000 00:01:00 GMT').getTime())
+    })
+    it(`should return 32 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+      expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
     })
   })
 })

@@ -332,8 +332,36 @@ describe(`#${ClassName}`, () => {
     afterAll(() => {
       jest.setSystemTime(new Date('1 Jan 2000 00:01:00 GMT').getTime())
     })
-    it(`should return 32 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
-      expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+
+    describe(`when calculating bolus when a correction is needed`, () => {
+      it(`should return 2 when 9.0 (glucoseReading) and 1 (carbsInGrams) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+        expect(TestBolusCalculator.getBolus(9.0, 1)).toBe(2)
+      })
+
+      it(`should return 32 when 24.0 (glucoseReading) and 16 (carbsInGrams) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+        expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+      })
     })
+
+    // describe(`when calculating bolus at certain times`)
+    // it(`should return 32 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+    //   expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+    // })
+
+    // it(`should return 32 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+    //   expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+    // })
+
+    // it(`should return 32 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+    //   expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+    // })
+
+    // it(`should return 32 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+    //   expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+    // })
+
+    // it(`should return 32 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+    //   expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+    // })
   })
 })

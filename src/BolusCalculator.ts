@@ -19,9 +19,9 @@ export class BolusCalculator {
 
     const floatBolus: number = this.getFloatBolus(carbsInGrams, carbRatio),
           roundedBolus: number = Math.round(floatBolus),
-          bolus = roundedBolus + correction
+          totalBolus = roundedBolus + correction
 
-    return bolus
+    return totalBolus
   }
 
   getBolusCorrection(glucoseReading: number) :number {

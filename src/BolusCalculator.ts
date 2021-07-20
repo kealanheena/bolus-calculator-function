@@ -24,7 +24,11 @@ export class BolusCalculator {
     return totalBolus
   }
 
-  getBolusCorrection(glucoseReading: number) :number {
+  // =================
+  // private functions
+  // =================
+
+  private getBolusCorrection(glucoseReading: number) :number {
     const currentTimeBlock: string = this.getCurrentTimeBlock(),
           activeTimeBlock: CalculationInfo = this.timeBlocks[currentTimeBlock],
           { insulinSensitivity, targetRange } = activeTimeBlock
@@ -37,10 +41,6 @@ export class BolusCalculator {
 
     return roundedCorrection
   }
-
-  // =================
-  // private functions
-  // =================
 
   private getCurrentTimeBlock() :string {
     const currentTime: Date = new Date(),

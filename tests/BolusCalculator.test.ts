@@ -162,162 +162,160 @@ describe(`#${ClassName}`, () => {
         expect(TestBolusCalculator.getBolus(5.0, 16)).toBe(1)
       }) 
     })
-  })
 
-  describe(`#getBolusCorrection`, () => {
-
-    it(`should be a function`, () => {
-      expect(TestBolusCalculator.getBolusCorrection).toBeInstanceOf(Function)
-    })
-
-    describe(`when the insulin sensitivity is 3.0`, () => {
-
-      beforeAll(() => {
-        TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 3.0
-      })
-      it(`should return 1 when 11.0 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(11.0)).toBe(1)
-      })
+    describe(`when 0 (carbsInGrams) is passed`, () => {
+      describe(`when the insulin sensitivity is 3.0`, () => {
   
-      it(`should return 2 when 14.0 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(14.0)).toBe(2)
-      })
-      describe(`rounding up`, () => {
-        it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
-          expect(TestBolusCalculator.getBolusCorrection(15.7)).toBe(3)
-        })
-      })
-
-      describe(`rounding down`, () => {
-        it(`should round down to 3 when 17.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
-          expect(TestBolusCalculator.getBolusCorrection(17.7)).toBe(3)
-        })
-      })
-    })
-
-    describe(`when the insulin sensitivity is 4.0`, () => {
-
-      beforeAll(() => {
-        TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 4.0
-      })
-
-      afterAll(() => {
-        TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 3.0
-      })
-      
-      it(`should return 1 when 12.0 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(12.0)).toBe(1)
-      })
-
-      it(`should return 2 when 16.0 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(16.0)).toBe(2)
-      })
-
-      it(`should return 0 when the number passed is less than the high number in the target range`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(7.0)).toBe(0)
-      })
-
-      describe(`rounding up`, ()=> {
-        it(`should round up to 2 when 14.7 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
-          expect(TestBolusCalculator.getBolusCorrection(14.7)).toBe(2)
-        })
-    
-        it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
-          expect(TestBolusCalculator.getBolusCorrection(19.7)).toBe(3)
-        })
-      })
-
-      describe(`rounding down`, ()=> {
-        it(`should round down to 1 when 13.1 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
-          expect(TestBolusCalculator.getBolusCorrection(13.1)).toBe(1)
+        beforeAll(() => {
+          TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 3.0
         })
   
-        it(`should round down to 2 when 17.1 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
-          expect(TestBolusCalculator.getBolusCorrection(17.1)).toBe(2)
+        it(`should return 1 when 11.0 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
+          expect(TestBolusCalculator.getBolus(11.0, 0)).toBe(1)
+        })
+    
+        it(`should return 2 when 14.0 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
+          expect(TestBolusCalculator.getBolus(14.0, 0)).toBe(2)
+        })
+  
+        it(`should return 0 when the number passed is less than the high number in the target range`, () => {
+          expect(TestBolusCalculator.getBolus(7.0, 0)).toBe(0)
+        })
+  
+        describe(`rounding up`, () => {
+          it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
+            expect(TestBolusCalculator.getBolus(15.7, 0)).toBe(3)
+          })
+        })
+  
+        describe(`rounding down`, () => {
+          it(`should round down to 3 when 17.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
+            expect(TestBolusCalculator.getBolus(17.7, 0)).toBe(3)
+          })
         })
       })
-    })
-
-    describe(`when calculating bolus correction at certain times`, () => {
-
-      beforeAll(() => {
-        testTimeBlocks = {
-          '00:00-05:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 6,
-            insulinSensitivity: 1.0
-          },
-          '05:00-11:30': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 6,
-            insulinSensitivity: 2.0
-          },
-          '11:30-16:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 6,
-            insulinSensitivity: 4.0
-          },
-          '16:00-20:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 6,
-            insulinSensitivity: 8.0
-          },
-          '20:00-00:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 6,
-            insulinSensitivity: 16.0
-          }
-        }
-    
-        TestBolusCalculator.timeBlocks = testTimeBlocks
-      })
-
-      afterAll(() => {
-        jest.setSystemTime(new Date('1 Jan 2000 00:01:00 GMT').getTime())
-
-        testTimeBlocks = {
-          '00:00-05:00': testCalculationInfo,
-          '05:00-11:30': testCalculationInfo,
-          '11:30-16:00': testCalculationInfo,
-          '16:00-20:00': testCalculationInfo,
-          '20:00-00:00': testCalculationInfo
-        }
-
-        TestBolusCalculator.timeBlocks = testTimeBlocks
-      })
-
-      it(`should return 16 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is equal to 1.0`, () => {
-        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(16)
-      })
-
-      it(`should return 8 when 24.0 (glucoseReading) is passed between "05:00-11:30" where insulin sensitivity is equal to 2.0`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 05:00:00 GMT').getTime())
-
-        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(8)
-      })
-
-      it(`should return 4 when 24.0 (glucoseReading) is passed between "11:30-16:00" where insulin sensitivity is equal to 4.0`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 11:30:00 GMT').getTime())
+  
+      describe(`when the insulin sensitivity is 4.0`, () => {
+  
+        beforeAll(() => {
+          TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 4.0
+        })
+  
+        afterAll(() => {
+          TestBolusCalculator.timeBlocks['00:00-05:00'].insulinSensitivity = 3.0
+        })
         
-        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(4)
+        it(`should return 1 when 12.0 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
+          expect(TestBolusCalculator.getBolus(12.0, 0)).toBe(1)
+        })
+  
+        it(`should return 2 when 16.0 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
+          expect(TestBolusCalculator.getBolus(16.0, 0)).toBe(2)
+        })
+  
+        it(`should return 0 when the number passed is less than the high number in the target range`, () => {
+          expect(TestBolusCalculator.getBolus(7.0, 0)).toBe(0)
+        })
+  
+        describe(`rounding up`, ()=> {
+          it(`should round up to 2 when 14.7 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
+            expect(TestBolusCalculator.getBolus(14.7, 0)).toBe(2)
+          })
+      
+          it(`should round up to 3 when 15.7 (glucoseReading) is passed and insulin sensitivity is equal to 3.0`, () => {
+            expect(TestBolusCalculator.getBolus(19.7, 0)).toBe(3)
+          })
+        })
+  
+        describe(`rounding down`, ()=> {
+          it(`should round down to 1 when 13.1 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
+            expect(TestBolusCalculator.getBolus(13.1, 0)).toBe(1)
+          })
+    
+          it(`should round down to 2 when 17.1 (glucoseReading) is passed and insulin sensitivity is equal to 4.0`, () => {
+            expect(TestBolusCalculator.getBolus(17.1, 0)).toBe(2)
+          })
+        })
       })
-
-      it(`should return 2 when 24.0 (glucoseReading) is passed between "16:00-20:00" where insulin sensitivity is equal to 8.0`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 16:00:00 GMT').getTime())
-
-        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(2)
+  
+      describe(`when calculating bolus correction at certain times`, () => {
+  
+        beforeAll(() => {
+          testTimeBlocks = {
+            '00:00-05:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 6,
+              insulinSensitivity: 1.0
+            },
+            '05:00-11:30': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 6,
+              insulinSensitivity: 2.0
+            },
+            '11:30-16:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 6,
+              insulinSensitivity: 4.0
+            },
+            '16:00-20:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 6,
+              insulinSensitivity: 8.0
+            },
+            '20:00-00:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 6,
+              insulinSensitivity: 16.0
+            }
+          }
+      
+          TestBolusCalculator.timeBlocks = testTimeBlocks
+        })
+  
+        afterAll(() => {
+          jest.setSystemTime(new Date('1 Jan 2000 00:01:00 GMT').getTime())
+  
+          testTimeBlocks = {
+            '00:00-05:00': testCalculationInfo,
+            '05:00-11:30': testCalculationInfo,
+            '11:30-16:00': testCalculationInfo,
+            '16:00-20:00': testCalculationInfo,
+            '20:00-00:00': testCalculationInfo
+          }
+  
+          TestBolusCalculator.timeBlocks = testTimeBlocks
+        })
+  
+        it(`should return 16 when 24.0 (glucoseReading) is passed between "00:00-05:00" where insulin sensitivity is equal to 1.0`, () => {
+          expect(TestBolusCalculator.getBolus(24.0, 0)).toBe(16)
+        })
+  
+        it(`should return 8 when 24.0 (glucoseReading) is passed between "05:00-11:30" where insulin sensitivity is equal to 2.0`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 05:00:00 GMT').getTime())
+  
+          expect(TestBolusCalculator.getBolus(24.0, 0)).toBe(8)
+        })
+  
+        it(`should return 4 when 24.0 (glucoseReading) is passed between "11:30-16:00" where insulin sensitivity is equal to 4.0`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 11:30:00 GMT').getTime())
+          
+          expect(TestBolusCalculator.getBolus(24.0, 0)).toBe(4)
+        })
+  
+        it(`should return 2 when 24.0 (glucoseReading) is passed between "16:00-20:00" where insulin sensitivity is equal to 8.0`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 16:00:00 GMT').getTime())
+  
+          expect(TestBolusCalculator.getBolus(24.0, 0)).toBe(2)
+        })
+  
+        it(`should return 1 when 24.0 (glucoseReading) is passed between "20:00-00:00" where insulin sensitivity is equal to 16.0`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 20:00:00 GMT').getTime())
+  
+          expect(TestBolusCalculator.getBolus(24.0, 0)).toBe(1)
+        }) 
       })
-
-      it(`should return 1 when 24.0 (glucoseReading) is passed between "20:00-00:00" where insulin sensitivity is equal to 16.0`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 20:00:00 GMT').getTime())
-
-        expect(TestBolusCalculator.getBolusCorrection(24.0)).toBe(1)
-      }) 
     })
-  })
-
-  describe(`#getBolus & #getBolusCorrection`, () => {
-
+  
     describe(`when calculating bolus when a correction is needed`, () => {
       it(`should return 2 when 11.0 (glucoseReading) and 6 (carbsInGrams) is passed where insulin sensitivity is 3.0 & carb ratio is 6`, () => {
         expect(TestBolusCalculator.getBolus(11.0, 6)).toBe(2)
@@ -326,71 +324,71 @@ describe(`#${ClassName}`, () => {
       it(`should return 4 when 14.0 (glucoseReading) and 12 (carbsInGrams) is passed where insulin sensitivity is 3.0 & carb ratio is 6`, () => {
         expect(TestBolusCalculator.getBolus(14.0, 12)).toBe(4)
       })
-    })
 
-    describe(`when calculating bolus at certain times`, () => {
-      beforeAll(() => {
-        testTimeBlocks = {
-          '00:00-05:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 1,
-            insulinSensitivity: 1.0
-          },
-          '05:00-11:30': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 2,
-            insulinSensitivity: 2.0
-          },
-          '11:30-16:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 4,
-            insulinSensitivity: 4.0
-          },
-          '16:00-20:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 8,
-            insulinSensitivity: 8.0
-          },
-          '20:00-00:00': {
-            targetRange: [5.0, 8.0],
-            carbRatio: 16,
-            insulinSensitivity: 16.0
+      describe(`when calculating bolus at certain times`, () => {
+        beforeAll(() => {
+          testTimeBlocks = {
+            '00:00-05:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 1,
+              insulinSensitivity: 1.0
+            },
+            '05:00-11:30': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 2,
+              insulinSensitivity: 2.0
+            },
+            '11:30-16:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 4,
+              insulinSensitivity: 4.0
+            },
+            '16:00-20:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 8,
+              insulinSensitivity: 8.0
+            },
+            '20:00-00:00': {
+              targetRange: [5.0, 8.0],
+              carbRatio: 16,
+              insulinSensitivity: 16.0
+            }
           }
-        }
-    
-        TestBolusCalculator.timeBlocks = testTimeBlocks
-      })
-  
-      afterAll(() => {
-        jest.setSystemTime(new Date('1 Jan 2000 00:01:00 GMT').getTime())
-      })
-  
-      it(`should return 32 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
-        expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
-      })
-
-      it(`should return 16 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "05:00-11:30" where insulin sensitivity is 2.0 & carb ratio is 2`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 05:00:00 GMT').getTime())
-
-        expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(16)
-      })
-
-      it(`should return 8 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "11:30-16:00" where insulin sensitivity is 4.0 & carb ratio is 4`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 11:30:00 GMT').getTime())
-
-        expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(8)
-      })
-
-      it(`should return 4 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "11:30-20:00" where insulin sensitivity is 8.0 & carb ratio is 8`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 16:00:00 GMT').getTime())
-
-        expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(4)
-      })
       
-      it(`should return 2 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "20:00-00:00" where insulin sensitivity is 16.0 & carb ratio is 16`, () => {
-        jest.setSystemTime(new Date('31 Dec 1999 20:00:00 GMT').getTime())
+          TestBolusCalculator.timeBlocks = testTimeBlocks
+        })
+    
+        afterAll(() => {
+          jest.setSystemTime(new Date('1 Jan 2000 00:01:00 GMT').getTime())
+        })
+    
+        it(`should return 32 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "00:00-05:00" where insulin sensitivity is 1.0 & carb ratio is 1`, () => {
+          expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(32)
+        })
 
-        expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(2)
+        it(`should return 16 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "05:00-11:30" where insulin sensitivity is 2.0 & carb ratio is 2`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 05:00:00 GMT').getTime())
+
+          expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(16)
+        })
+
+        it(`should return 8 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "11:30-16:00" where insulin sensitivity is 4.0 & carb ratio is 4`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 11:30:00 GMT').getTime())
+
+          expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(8)
+        })
+
+        it(`should return 4 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "11:30-20:00" where insulin sensitivity is 8.0 & carb ratio is 8`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 16:00:00 GMT').getTime())
+
+          expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(4)
+        })
+        
+        it(`should return 2 when 24.0 (glucoseReading) and 16 (gramsInCarbs) is passed between "20:00-00:00" where insulin sensitivity is 16.0 & carb ratio is 16`, () => {
+          jest.setSystemTime(new Date('31 Dec 1999 20:00:00 GMT').getTime())
+
+          expect(TestBolusCalculator.getBolus(24.0, 16)).toBe(2)
+        })
       })
     })
   })

@@ -15,7 +15,7 @@ export class BolusCalculator {
 
     let correction: number = 0
 
-    if(!this.isCorrectionZero(glucoseReading, targetRange[1])) correction = this.getBolusCorrection(glucoseReading)
+    if(!this.isCorrectionZero(glucoseReading, targetRange[1])) correction = this.getBolusCorrection(glucoseReading, activeTimeBlock)
 
     const floatBolus: number = this.getFloatBolus(carbsInGrams, carbRatio),
           roundedBolus: number = Math.round(floatBolus),
@@ -28,10 +28,8 @@ export class BolusCalculator {
   // private functions
   // =================
 
-  private getBolusCorrection(glucoseReading: number) :number {
-    const currentTimeBlock: string = this.getCurrentTimeBlock(),
-          activeTimeBlock: CalculationInfo = this.timeBlocks[currentTimeBlock],
-          { insulinSensitivity, targetRange } = activeTimeBlock
+  private getBolusCorrection(glucoseReading: number, currentTimeBlock: CalculationInfo) :number {
+    const { insulinSensitivity, targetRange } = currentTimeBlock
 
     if (this.isCorrectionZero(glucoseReading, targetRange[1])) return 0
 
